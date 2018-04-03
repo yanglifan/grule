@@ -2,6 +2,7 @@ package com.github.yanglifan.grule.core;
 
 import com.github.yanglifan.grule.core.domain.Rule;
 import com.github.yanglifan.grule.core.repository.RuleRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -26,7 +28,18 @@ public class GRuleEngineTest {
     private GRuleEngine ruleEngine;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        ruleEngine = new GRuleEngine(ruleRepository);
+        ruleEngine.init();
+    }
+
+    @After
+    public void tearDown() {
+        ruleRepository.deleteAll();
+    }
+
+    @Test
+    public void test1() {
         Rule rule = new Rule();
         rule.setName("test");
         rule.setExpression("p.name == 'tom' && p.size > 5");
@@ -34,17 +47,46 @@ public class GRuleEngineTest {
 
         ruleRepository.save(rule);
 
-        ruleEngine = new GRuleEngine(ruleRepository);
-        ruleEngine.init();
-    }
-
-    @Test
-    public void basic() {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "tom");
         params.put("size", 6);
 
         String value = ruleEngine.evaluate("test", params);
+        assertThat(value, is("success"));
+
+        params.put("name", "tom");
+        params.put("size", 1);
+
+        value = ruleEngine.evaluate("test", params);
+        assertNull(value);
+    }
+
+    @Test
+    public void test2() {
+        Rule rule = new Rule();
+        rule.setName("test");
+        rule.setExpression("p.name.startsWith('x') && p.age > 18");
+        rule.setValue("success");
+
+        ruleRepository.save(rule);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "x-man");
+        params.put("age", 6);
+
+        String value = ruleEngine.evaluate("test", params);
+        assertNull(value);
+
+        params.put("name", "tom");
+        params.put("age", 20);
+
+        value = ruleEngine.evaluate("test", params);
+        assertNull(value);
+
+        params.put("name", "x-man");
+        params.put("age", 20);
+
+        value = ruleEngine.evaluate("test", params);
         assertThat(value, is("success"));
     }
 }

@@ -11,7 +11,7 @@
 
     <groupId>com.github.yanglifan</groupId>
     <artifactId>grule</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <modules>
         <module>grule-core</module>
         <module>grule-web</module>

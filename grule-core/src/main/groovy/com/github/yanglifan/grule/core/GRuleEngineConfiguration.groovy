@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class GRuleEngineConfiguration {
     @Bean
-    GRuleEngine gRuleEngine(RuleRepository ruleRepository) {
-        new GRuleEngine(ruleRepository)
+    GRuleEngine ruleEngine(RuleRepository ruleRepository) {
+        GRuleEngine ruleEngine = new GRuleEngine(ruleRepository)
+        ruleEngine.init()
+        return ruleEngine
     }
 }
