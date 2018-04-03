@@ -47,10 +47,7 @@ public class GRuleWebApplication implements CommandLineRunner {
         @RequestMapping(value = "/{ruleName}/evaluate", method = RequestMethod.GET)
         public EvaluateResult evaluate(@PathVariable String ruleName, @RequestParam Map<String, Object> params) {
             params.put("length", 5);
-            String evalResult = ruleEngine.evaluate(ruleName, params);
-            EvaluateResult evaluateResult = new EvaluateResult();
-            evaluateResult.setValue(evalResult);
-            return evaluateResult;
+            return ruleEngine.evaluate(ruleName, params);
         }
     }
 }

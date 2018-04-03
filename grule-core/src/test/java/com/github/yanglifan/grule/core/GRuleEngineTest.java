@@ -1,5 +1,6 @@
 package com.github.yanglifan.grule.core;
 
+import com.github.yanglifan.grule.core.domain.EvaluateResult;
 import com.github.yanglifan.grule.core.domain.Rule;
 import com.github.yanglifan.grule.core.repository.RuleRepository;
 import org.junit.After;
@@ -51,14 +52,14 @@ public class GRuleEngineTest {
         params.put("name", "tom");
         params.put("size", 6);
 
-        String value = ruleEngine.evaluate("test", params);
-        assertThat(value, is("success"));
+        EvaluateResult result = ruleEngine.evaluate("test", params);
+        assertThat(result.getValue(), is("success"));
 
         params.put("name", "tom");
         params.put("size", 1);
 
-        value = ruleEngine.evaluate("test", params);
-        assertNull(value);
+        result = ruleEngine.evaluate("test", params);
+        assertThat(result.getType(), is(EvaluateResult.ResultType.FALSE));
     }
 
     @Test
@@ -74,19 +75,19 @@ public class GRuleEngineTest {
         params.put("name", "x-man");
         params.put("age", 6);
 
-        String value = ruleEngine.evaluate("test", params);
-        assertNull(value);
+        EvaluateResult result = ruleEngine.evaluate("test", params);
+        assertThat(result.getType(), is(EvaluateResult.ResultType.FALSE));
 
         params.put("name", "tom");
         params.put("age", 20);
 
-        value = ruleEngine.evaluate("test", params);
-        assertNull(value);
+        result = ruleEngine.evaluate("test", params);
+        assertThat(result.getType(), is(EvaluateResult.ResultType.FALSE));
 
         params.put("name", "x-man");
         params.put("age", 20);
 
-        value = ruleEngine.evaluate("test", params);
-        assertThat(value, is("success"));
+        result = ruleEngine.evaluate("test", params);
+        assertThat(result.getType(), is(EvaluateResult.ResultType.TRUE));
     }
 }

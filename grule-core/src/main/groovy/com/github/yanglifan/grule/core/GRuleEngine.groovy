@@ -1,5 +1,6 @@
 package com.github.yanglifan.grule.core
 
+import com.github.yanglifan.grule.core.domain.EvaluateResult
 import com.github.yanglifan.grule.core.domain.Rule
 import com.github.yanglifan.grule.core.repository.RuleRepository
 
@@ -25,7 +26,7 @@ class GRuleEngine {
     /**
      * Load a latest rule by the name, and execute it with params
      */
-    String evaluate(String name, Map<String, Object> params) {
+    EvaluateResult evaluate(String name, Map<String, Object> params) {
         Rule rule = findRule(name)
 
         Bindings binding = scriptEngine.createBindings()
@@ -36,7 +37,11 @@ class GRuleEngine {
 
         boolean flag = scriptEngine.invokeFunction(name, params)
 
-        return flag ? rule.value : null
+        if (flag) {
+            return EvaluateResult.trueResult(rule.value)
+        } else {
+            return EvaluateResult.falseResult()
+        }
     }
 
     private Rule findRule(String name) {
