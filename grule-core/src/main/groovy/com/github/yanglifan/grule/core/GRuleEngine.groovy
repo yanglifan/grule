@@ -1,5 +1,8 @@
 package com.github.yanglifan.grule.core
 
+import com.github.yanglifan.grule.core.domain.Rule
+import com.github.yanglifan.grule.core.repository.RuleRepository
+
 import javax.script.Bindings
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
